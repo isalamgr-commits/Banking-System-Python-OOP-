@@ -10,7 +10,7 @@ class Account:
             print("INVALID AMOUNT.") 
             return False
         
-        self.balance=self.balance+amount
+        self.balance += amount
         return True
 
     def withdraw(self,amount):
@@ -23,7 +23,7 @@ class Account:
             print("INSUFFICIENT FUNDS.")
             return False
 
-        self.balance=self.balance-amount
+        self.balance -= amount
         return True
     
     def show_info(self):
