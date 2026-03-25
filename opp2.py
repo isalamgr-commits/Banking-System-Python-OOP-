@@ -1,3 +1,5 @@
+import random 
+
 class Client:
     def __init__(self,id ,name,email):
         self.id = id
@@ -6,7 +8,6 @@ class Client:
         self.accounts=[]
     
     def show(self):
-        print(self.id)
-        print(self.name)
-        print(self.email)
-        
+        print(f"ID: {self.id}")
+        print(f"NAME: {self.name}")
+        print(f"EMAIL: {self.email}")

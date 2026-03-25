@@ -30,6 +30,3 @@ class Account:
         print(f"ACCOUNT: {self.n_account}")
         print(f"CLIENT: {self.client}")
         print(f"BALANCE: $ {self.balance:.2f}")
-
-cuenta = Account("461798712",239, "MARCO PEÑA SOLIS")
-cuenta.show_info()
