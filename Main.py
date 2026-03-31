@@ -3,6 +3,7 @@ from opp2 import Client
 
 def principal():
     banco = Bank()
+    
 
     while True:
         print("\n--- MENU ---")
@@ -18,6 +19,11 @@ def principal():
             
             while True:
                 id = input("ID: ")
+
+                if id.strip() == "":
+                    print("ENTER YOUR ID.")
+                    continue
+
                 if not id.isdigit():
                     print("INVALID ID")
                     continue
@@ -27,18 +33,42 @@ def principal():
                     continue
                 break
             
-            name = input("FULL NAME:")
+            while True:
+                name = input("FULL NAME:")
+                if name == " ":
+                    print("PLEASE, ENTER A NAME.")
+                    continue
+                if not name.replace(" ","").isalpha():
+                    print("PLEASE, ENTER A VALID NAME")
+                    continue
+                break
             
             while True:
 
-              email = input("EMAIL: ")
+              email = input("EMAIL: ").strip()
               if "@" not in email:
                 print("INVALID EMAIL.")
                 continue
+              if email == "":
+                  print("INVALID EMAIL.")
+                  continue
+              
+              if " " in email:
+                  print("INVALID EMAIL.")
+                  continue
+              
+              valid_domains = ["@gmail.com",
+                               "@outlook.com",
+                               "@hotmail.com",
+                               "@edu.pe",
+                               "@uni.edu"]
+
+              if not any(email.endswith(domain) for domain in valid_domains):
+                  print("INVALID EMAIL")
+                  continue
               break    
 
-            banco.create_client(id, name, email)
-            
+            banco.create_client(id, name, email)     
 
         elif option == "2":
             banco.create_account()
@@ -47,7 +77,89 @@ def principal():
             banco.search_account()
         
         elif option == "4":
-            pass
+            print("TRANFER TYPE:")
+            print("1 INTERNAL")
+            print("2 EXTERNAL")
+
+            transfer_option = input("SELECT:")
+
+            if transfer_option == "1":
+                banco.transfer()
+
+            elif transfer_option == "2":
+                origen = input("ENTER YOUR ACCOUNT: ")
+                cuenta_origen = None
+
+                for acc in banco.accounts:
+                    if acc.n_account == origen:
+                        cuenta_origen = acc
+                        break
+                
+                if not cuenta_origen:
+                    print("ACCOUNT NOT FOUND")
+                    continue
+                
+                external_account = input("ENTER DESTINATION ACCOUNT:")
+                
+                if origen == external_account:
+                    print("CANNOT TRANSFER TO SAME ACCOUNT")
+                    continue
+
+                bank_name = input("ENTER BANK NAME: ")
+
+                attempts = 3
+                
+                while attempts > 0:
+                    pin_input = input("ENTER YOUR PIN: ")       
+                
+                    if pin_input == cuenta_origen.pin:
+                        break
+
+                    attempts -= 1
+                    print(F"INVALID PIN. ATTEMPTS LEFT: {attempts}")
+
+                    if attempts == 0:
+                      print("ACCOUNT BLOCKED")
+                      return
+                
+                while True:
+                    try:
+                        amount = float(input("ENTER AMOUNT: "))
+                        if amount <= 0:
+                            print("INVALID AMOUNT")
+                            continue
+                        break
+                    except:
+                        print("INVALID INPUT.")
+                
+                fee = 5
+                total = amount + fee
+
+                print("\n---EXTERNAL TRANFER---")
+                print(f"FROM: {cuenta_origen.n_account}")
+                print(f"TO: {external_account}")
+                print(f"BANK: {bank_name}")
+                print(f"AMOUNT: {amount}")
+                print(f"FEE: {fee}")
+
+                confirm = input(f"CONFIRM TRANFER ${total} ? (y/n): ")
+
+                if confirm.lower() != "y":
+                    print("CANCELLED")
+                    continue
+
+                if not cuenta_origen.withdraw(total):
+                        print("TRANSFER FAILED (INSUFICIENT FUNDS)")
+                        continue
+
+                print("----TRASNFER SUCCESFULL----")
+                print(f"FROM: {cuenta_origen.n_account}")
+                print(f"TO: {external_account}")
+                print(f"BANK: {bank_name}")
+                print(f"AMOUNT: {amount}")
+                print(f"FEE: {fee}")
+                print(f"TOTAL: ${total}")
+                print("STATUS: SENT")
 
         elif option == "5":
             print("THANKS FOR USING BANK'S")

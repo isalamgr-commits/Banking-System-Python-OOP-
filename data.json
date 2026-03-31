@@ -1,0 +1,28 @@
+[
+    {
+        "id": "60770979",
+        "name": "Salam Garcia Ramos",
+        "email": "isalamgr@gmail.com",
+        "accounts": [
+            {
+                "n_account": "691588430104",
+                "balance": 1000.0,
+                "type": "SavingAccount",
+                "pin": "2005"
+            }
+        ]
+    },
+    {
+        "id": "40765490",
+        "name": "Maria del pilar",
+        "email": "maria@gmail.com",
+        "accounts": [
+            {
+                "n_account": "830718336321",
+                "balance": 1200.0,
+                "type": "SavingAccount",
+                "pin": "2004"
+            }
+        ]
+    }
+]

@@ -1,3 +1,4 @@
+import getpass
 import random
 from opp2 import Client
 from CuentaAhorro import SavingAccount
@@ -7,6 +8,8 @@ class Bank:
     def __init__(self):
         self.clients = []
         self.accounts = []
+        self.load_data()
+        
         
     def create_client(self, id, name, email):
         cliente = Client(id, name, email) # type: ignore
@@ -34,13 +37,14 @@ class Bank:
     
     def create_pin(self):
         while True:
-            pin = input("CREATE 4-DIGIT PIN: ")
+
+            pin = getpass.getpass("CREATE 4-DIGIT PIN: ")
 
             if not pin.isdigit() or len(pin) != 4:
                 print("INVALID PIN.")
                 continue
             
-            confirm = input("CONFIRM PIN: ")
+            confirm = getpass.getpass("CONFIRM PIN: ")
 
             if pin != confirm:
                 print("PIN DOES NOT MATCH")
@@ -74,9 +78,12 @@ class Bank:
                 except:
                     print("INVALID AMOUNT")
             
+            
             n_account = self.generate_account_number()
             
             cuenta = SavingAccount(n_account, balance, client_found)
+            pin = self.create_pin()
+            cuenta.pin = pin 
 
         elif account_type == "2":
             while True:
@@ -101,7 +108,11 @@ class Bank:
             n_account = self.generate_account_number()
 
             overdraft = 500
+           
             cuenta = CurrentAccount(n_account, balance, client_found, overdraft)
+           
+            pin = self.create_pin()
+            cuenta.pin = pin
 
         else:
             print("INVALID OPTION.")
@@ -109,9 +120,10 @@ class Bank:
 
         self.accounts.append(cuenta)
         client_found.accounts.append(cuenta)
+        self.save_data()
         
         print("ACCOUNT CREATED SUCCESSFULLY.")
-        pin = self.create_pin()
+        
         print(f"ACCOUNT NUMBER: {n_account}")
     
     def search_account(self):
@@ -135,7 +147,7 @@ class Bank:
                 break
         
         if not cuenta_origen:
-            print("ACCOUNR NOT FOUND.")
+            print("ACCOUNT NOT FOUND.")
             return
         
         pin_input = input("ENTER YOUR PIN: ")
@@ -177,5 +189,60 @@ class Bank:
         else:
             cuenta_destino.deposit(amount)
             print("TRANSFER SUCCESSFUL")
+    
+    def save_data(self):
+        import json
 
-        
+        data = []
+
+        for client in self.clients:
+            data.append({
+                "id": client.id,
+                "name": client.name,
+                "email": client.email,
+                "accounts": [
+                    {
+                        "n_account":acc.n_account,
+                         "balance": acc.balance,
+                         "type":acc.__class__.__name__,
+                         "pin":getattr(acc, "pin", None)
+                    }
+                    for acc in client.accounts
+                ]
+                })
+        with open("data.json", "w") as file:
+            json.dump(data, file, indent = 4)
+
+    def load_data(self):
+        import json
+
+        try:
+            with open("data.json", "r") as file:
+                data = json.load(file)
+
+                for c in data:
+                    client = Client(c["id"], c["name"], c["email"])
+
+                    for acc in c["accounts"]:
+                        if acc["type"] == "SavingAccount":
+                            cuenta = SavingAccount(
+                                acc["n_account"],
+                                acc["balance"],
+                                client
+                            )
+                        else:
+                            cuenta = CurrentAccount(
+                                acc["n_account"],
+                                acc["balance"],
+                                client,
+                                500
+                            )
+                        cuenta.pin = acc["pin"]
+
+                        client.accounts.append(cuenta)
+                        self.accounts.append(cuenta)
+                    
+                    self.clients.append(client)
+        except:
+            pass
+    
