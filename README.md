@@ -8,14 +8,14 @@ It simulates basic banking operations such as client management, account creatio
 
 Features
 
-- Crear nuevos clientes
-- Generar números de cuenta únicos de 12 dígitos
-- Sistema de PIN seguro de 4 dígitos (entrada oculta)
-- Depositar y retirar dinero
-- Transferencias internas (mismo banco)
-- Transferencias externas (con comisión)
-- Persistencia de datos con JSON (los datos se guardan incluso después de cerrar el programa)
-- Validaciones de entrada (correo electrónico, ID, saldo, etc.)
+-Create new clients
+-Generate unique 12-digit account numbers
+-Secure 4-digit PIN system (hidden input)
+-Deposit and withdraw money
+-Internal transfers (same bank)
+-External transfers (with fee)
+-Data persistence using JSON (data is saved even after closing the program)
+-Input validations (email, ID, balance, etc.)
 
 Technologies Used
 
@@ -25,9 +25,9 @@ Technologies Used
 .getpass
 
 
-ESTRUCTURA DEL PROYECTO
+PROJECT STRUCTURE
 
-/PROYECTO
+/PROJECT
 
 │── Main.py
 │── Bank.py
