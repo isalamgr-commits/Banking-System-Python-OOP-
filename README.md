@@ -28,6 +28,7 @@ Technologies Used
 ESTRUCTURA DEL PROYECTO
 
 /PROYECTO
+
 │── Main.py
 │── Bank.py
 │── Cuenta.py
